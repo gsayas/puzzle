@@ -18,12 +18,12 @@ public class Board {
 
     for (int i = 0; i < dim; i++) {
       for (int j = 0; j < dim; j++) {
-        if ( blocks[i][j] != goalValue(i, j) )
+        if ( isWrongValue(i, j) && blocks[i][j] != 0 )
           hamming++;
       }
     }
 
-    return hamming - 1;
+    return hamming;
   } // number of blocks out of place
 
   private int goalValue(int row, int col) {
@@ -34,11 +34,39 @@ public class Board {
   }
 
   public int manhattan() {
-    return 0;
+    int manhattan = 0;
+    int dim = dimension();
+
+    for (int i = 0; i < dim; i++) {
+      for (int j = 0; j < dim; j++) {
+        if ( isWrongValue(i, j) && blocks[i][j] != 0 )
+          manhattan += getShift(blocks[i][j], i, j);
+      }
+    }
+
+    return manhattan;
   } // sum of Manhattan distances between blocks and goal
 
+  private int getShift(int value, int actualRow, int actualCol) {
+    int expectedRow = value / dimension();
+    int expectedCol = value - expectedRow*dimension() - 1;
+    return Math.abs(actualRow - expectedRow) + Math.abs(actualCol - expectedCol);
+  }
+
+  private boolean isWrongValue(int row, int col) {
+    return blocks[row][col] != goalValue(row, col);
+  }
+
   public boolean isGoal() {
-    return false;
+    int dim = dimension();
+
+    for (int i = 0; i < dim; i++) {
+      for (int j = 0; j < dim; j++) {
+        if ( blocks[i][j] != goalValue(i, j) )
+          return false;
+      }
+    }
+    return true;
   } // is this board the goal board?
 
   public Board twin() {
