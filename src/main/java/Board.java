@@ -1,19 +1,37 @@
 public class Board {
 
-  private int dimension;
+  private int [][] blocks;
 
-  public Board(int[][] blocks) {
-    dimension = blocks.length;
+  public Board(int[][] argBlocks) {
+    blocks = argBlocks;
+
   } // construct a board from an n-by-n array of blocks
   // (where blocks[i][j] = block in row i, column j)
 
   public int dimension() {
-    return dimension;
+    return blocks.length;
   } // board dimension n
 
   public int hamming() {
-    return 0;
+    int hamming = 0;
+    int dim = dimension();
+
+    for (int i = 0; i < dim; i++) {
+      for (int j = 0; j < dim; j++) {
+        if ( blocks[i][j] != goalValue(i, j) )
+          hamming++;
+      }
+    }
+
+    return hamming - 1;
   } // number of blocks out of place
+
+  private int goalValue(int row, int col) {
+    if (row == dimension() - 1  && col == dimension() - 1) {
+      return 0;
+    }
+    return row*dimension() + col + 1;
+  }
 
   public int manhattan() {
     return 0;
