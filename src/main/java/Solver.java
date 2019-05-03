@@ -1,10 +1,13 @@
 import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.Queue;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 public class Solver {
 
-  private List<Board> solution;
+  private Node solution;
   private int moves;
   private Board board;
 
@@ -15,17 +18,16 @@ public class Solver {
 
   private void solve() {
     MinPQ<Node> queue = new MinPQ<>();
-    solution = new ArrayList<>();
     queue.insert(new Node(board, null));
     Node current;
 
     do {
       current = queue.delMin();
-      solution.add(current.getBoard());
       insertNeighbors(queue, current, false);
     } while ( !current.getBoard().isGoal() );
 
     moves = current.moves();
+    solution = current;
   }
 
   private void insertNeighbors(MinPQ<Node> queue, Node current, boolean debug) {
@@ -66,9 +68,6 @@ public class Solver {
       currentTrue = queueTrue.delMin();
       currentFalse = queueFalse.delMin();
 
-      //queueTrue = new MinPQ<>();
-      //queueFalse = new MinPQ<>();
-
       insertNeighbors(queueTrue, currentTrue, false);
       insertNeighbors(queueFalse, currentFalse, false);
 
@@ -87,8 +86,17 @@ public class Solver {
 
   public Iterable<Board> solution() {
     if( solution == null) solve();
+    List<Board> solutionNodes = new ArrayList<>();
+    solutionNodes.add(solution.getBoard());
+    Node current = solution;
 
-    return solution;
+    while (current.getParent() != null){
+      solutionNodes.add(current.getParent().getBoard());
+      current = current.getParent();
+    }
+    Collections.reverse(solutionNodes);
+
+    return solutionNodes;
   }
 
   public static void main(String[] args) {

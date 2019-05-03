@@ -4,11 +4,10 @@ import java.util.Random;
 
 public class Board {
 
-  private int [][] blocks;
+  private final int [][] blocks;
 
   public Board(int[][] argBlocks) {
-    blocks = argBlocks;
-
+    blocks = copyBlocks(argBlocks);
   } // construct a board from an n-by-n array of blocks
   // (where blocks[i][j] = block in row i, column j)
 
@@ -43,7 +42,7 @@ public class Board {
 
     for (int i = 0; i < dim; i++) {
       for (int j = 0; j < dim; j++) {
-        if ( isWrongValue(i, j) && blocks[i][j] != 0 )
+        if ( blocks[i][j] != 0 && isWrongValue(i, j) )
           manhattan += getShift(blocks[i][j], i, j);
       }
     }
@@ -52,9 +51,10 @@ public class Board {
   } // sum of Manhattan distances between blocks and goal
 
   private int getShift(int value, int actualRow, int actualCol) {
-    int expectedRow = value / dimension();
-    int expectedCol = value - expectedRow*dimension() - 1;
-    return Math.abs(actualRow - expectedRow) + Math.abs(actualCol - expectedCol);
+    int expectedRow = (value-1) / dimension();
+    int expectedCol = Math.abs(value - expectedRow*dimension() - 1);
+    int shift = Math.abs(actualRow - expectedRow) + Math.abs(actualCol - expectedCol);
+    return shift;
   }
 
   private boolean isWrongValue(int row, int col) {
@@ -74,18 +74,22 @@ public class Board {
   } // is this board the goal board?
 
   public Board twin() {
-    return new Board(randomTwinBlocks());
+    return new Board(twinBlocks());
   } // a board that is obtained by exchanging any pair of blocks
 
-  private int[][] randomTwinBlocks() {
-    Cell a = getRandomCell();
-    Cell b;
+  private int[][] twinBlocks() {
+    Cell a = getCellIfNotZero(0,0);
+    Cell b = getCellIfNotZero(0,1);
 
-    do {
-      b = getRandomCell();
-    } while (b.equals(a));
 
     return swapBlocks(a, b);
+  }
+
+  private Cell getCellIfNotZero(int x, int y) {
+    Cell zero = findZero();
+    Cell candidate = new Cell(x, y);
+
+    return !zero.equals(candidate) ? candidate : new Cell(1, 1);
   }
 
   private int[][] swapBlocks(Cell a, Cell b) {
@@ -96,10 +100,11 @@ public class Board {
   }
 
   private int[][] copyBlocks(int[][] blocks) {
-    int [][] copy = new int[dimension()][dimension()];
+    int dimension = blocks.length;
+    int [][] copy = new int[dimension][dimension];
 
-    for (int i = 0; i < dimension(); i++) {
-      for (int j = 0; j < dimension(); j++) {
+    for (int i = 0; i < dimension; i++) {
+      for (int j = 0; j < dimension; j++) {
         copy[i][j] = blocks[i][j];
       }
     }
@@ -109,6 +114,9 @@ public class Board {
 
   @Override
   public boolean equals(Object y) {
+    if(y == null) return false;
+    if(y.getClass() == String.class) return false;
+
     Board that = (Board) y;
     if(this == y) return true;
 
@@ -165,21 +173,6 @@ public class Board {
   public static void main(String[] args) {
 
   } // unit tests (not graded)
-
-  private Cell getRandomCell() {
-    Cell zero = findZero();
-    Cell b;
-    do {
-      b = new Cell(getRandomIndex(), getRandomIndex());
-    } while (b.equals(zero));
-
-    return b;
-  }
-
-  private int getRandomIndex() {
-    Random r = new Random();
-    return r.ints(0, dimension()).findFirst().getAsInt();
-  }
 
   private class Cell {
     int row;

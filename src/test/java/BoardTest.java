@@ -15,7 +15,7 @@ public class BoardTest {
   private Board rightBoard;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     wrongBlocks = new int[3][3];
     wrongBlocks[0][0] = 8; wrongBlocks[0][1] = 1; wrongBlocks[0][2] = 3;
     wrongBlocks[1][0] = 4; wrongBlocks[1][1] = 0; wrongBlocks[1][2] = 2;
@@ -51,8 +51,14 @@ public class BoardTest {
 
   @Test
   public void testManhattan() {
+    wrongBlocks = new int[2][2];
+    wrongBlocks[0][0] = 1; wrongBlocks[0][1] = 0;
+    wrongBlocks[1][0] = 2; wrongBlocks[1][1] = 3;
+    Board square = new Board(wrongBlocks);
+
     assertEquals(10, wrongBoard.manhattan());
     assertEquals(0, rightBoard.manhattan());
+    assertEquals(3, square.manhattan());
   }
 
   @Test
