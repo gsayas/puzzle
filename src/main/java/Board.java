@@ -83,7 +83,7 @@ public class Board {
 
     do {
       b = getRandomCell();
-    } while (b == a);
+    } while (b.equals(a));
 
     return swapBlocks(a, b);
   }
@@ -157,6 +157,7 @@ public class Board {
         if (j < dimension() - 1) builder.append(" ");
       }
     }
+    //builder.append("\nmanhattan: " + manhattan());
 
     return builder.toString();
   } // string representation of this board (in the output format specified below)
@@ -166,7 +167,13 @@ public class Board {
   } // unit tests (not graded)
 
   private Cell getRandomCell() {
-    return new Cell(getRandomIndex(), getRandomIndex());
+    Cell zero = findZero();
+    Cell b;
+    do {
+      b = new Cell(getRandomIndex(), getRandomIndex());
+    } while (b.equals(zero));
+
+    return b;
   }
 
   private int getRandomIndex() {

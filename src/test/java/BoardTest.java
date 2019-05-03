@@ -75,8 +75,8 @@ public class BoardTest {
   @Test
   public void testTwin() {
     Board twin = rightBoard.twin();
-    System.out.println(twin.toString());
-    System.out.println(rightBoard.toString());
+    /*System.out.println(twin.toString());
+    System.out.println(rightBoard.toString());*/
 
     assertNotEquals(rightBoard, twin);
     assertEquals(rightBoard.dimension(), twin.dimension());
@@ -86,9 +86,9 @@ public class BoardTest {
   public void testNeighbors() {
     Iterable<Board> neighbors = rightBoard.neighbors();
 
-    for (Board board : neighbors) {
+    /*for (Board board : neighbors) {
       System.out.println(board.toString());
-    }
+    }*/
 
     assertEquals(2, StreamSupport.stream(neighbors.spliterator(), false).count());
 
