@@ -1,9 +1,7 @@
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Queue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 public class Solver {
 
@@ -85,6 +83,7 @@ public class Solver {
   }
 
   public Iterable<Board> solution() {
+    if( !isSolvable() ) return null;
     if( solution == null) solve();
     List<Board> solutionNodes = new ArrayList<>();
     solutionNodes.add(solution.getBoard());
