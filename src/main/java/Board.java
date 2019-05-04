@@ -115,7 +115,7 @@ public class Board {
   @Override
   public boolean equals(Object y) {
     if(y == null) return false;
-    if(y.getClass() == String.class) return false;
+    if(y.getClass() != Board.class) return false;
 
     Board that = (Board) y;
     if(this == y) return true;

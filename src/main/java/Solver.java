@@ -10,6 +10,7 @@ public class Solver {
   private Board board;
 
   public Solver(Board initial) {
+    if (initial == null) throw new java.lang.IllegalArgumentException();
     board = initial;
     moves = -1;
   }
@@ -21,31 +22,20 @@ public class Solver {
 
     do {
       current = queue.delMin();
-      insertNeighbors(queue, current, false);
+      insertNeighbors(queue, current);
     } while ( !current.getBoard().isGoal() );
 
     moves = current.moves();
     solution = current;
   }
 
-  private void insertNeighbors(MinPQ<Node> queue, Node current, boolean debug) {
+  private void insertNeighbors(MinPQ<Node> queue, Node current) {
     Iterable<Board> neighbors = current.getBoard().neighbors();
-    String debugNeighbors = "";
 
     for (Board neighbor : neighbors ) {
-      if (!neighbor.equals(current.getBoard()) && isNotNeighborParent(neighbor, current)) {
+      if ( isNotNeighborParent(neighbor, current)) {
         queue.insert(new Node(neighbor, current));
-        debugNeighbors = debugNeighbors + (new Node(neighbor, current)).toString() + "\n";
       }
-    }
-
-    if(debug) {
-      System.out.println(current.toString());
-      System.out.println("-----Neighbors:-----");
-      System.out.println(debugNeighbors);
-      System.out.println("--------------------\n");
-      System.out.print("\033[H\033[2J");
-      System.out.flush();
     }
   }
 
@@ -66,14 +56,12 @@ public class Solver {
       currentTrue = queueTrue.delMin();
       currentFalse = queueFalse.delMin();
 
-      insertNeighbors(queueTrue, currentTrue, false);
-      insertNeighbors(queueFalse, currentFalse, false);
+      insertNeighbors(queueTrue, currentTrue);
+      insertNeighbors(queueFalse, currentFalse);
 
       if( currentTrue.getBoard().isGoal() ) return true;
       if( currentFalse.getBoard().isGoal() ) return false;
-
     }
-
   }
 
   public int moves() {
